@@ -1,10 +1,8 @@
 package com.mikhailovalx.notes.screens.main
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +15,7 @@ import com.mikhailovalx.notes.utilits.APP_ACTIVITY
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
-    private  val mBinding get() = _binding!!
+    private val mBinding get() = _binding!!
     private lateinit var mViewModel: MainFragmentViewModel
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: MainAdapter
@@ -37,11 +35,12 @@ class MainFragment : Fragment() {
     }
 
     private fun initialization() {
+        setHasOptionsMenu(true)
         mAdapter = MainAdapter()
         mRecyclerView = mBinding.recyclerView
         mRecyclerView.adapter = mAdapter
 
-        mObserverList = Observer{
+        mObserverList = Observer {
             val list = it.asReversed()
             mAdapter.setList(list)
         }
@@ -49,7 +48,7 @@ class MainFragment : Fragment() {
         mViewModel = ViewModelProvider(this).get(MainFragmentViewModel::class.java)
         mViewModel.allNotes.observe(this, mObserverList)
 
-        mBinding.btnAddNote.setOnClickListener{
+        mBinding.btnAddNote.setOnClickListener {
             APP_ACTIVITY.navController.navigate(R.id.action_mainFragment_to_addNewNoteFragment)
         }
     }
@@ -61,12 +60,30 @@ class MainFragment : Fragment() {
         mRecyclerView.adapter = null
     }
 
-    companion object{
-        fun click(note: AppNote){
+    companion object {
+        fun click(note: AppNote) {
             val bundle = Bundle()
             bundle.putSerializable("note", note)
             APP_ACTIVITY.navController.navigate(R.id.action_mainFragment_to_noteFragment, bundle)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.btn_exit -> {
+                mViewModel.signOut()
+
+                APP_ACTIVITY.runOnUiThread {
+                    APP_ACTIVITY.navController.navigate(R.id.action_mainFragment_to_startFragment)
+                }
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
