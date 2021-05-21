@@ -10,6 +10,7 @@ import com.mikhailovalx.notes.R
 import com.mikhailovalx.notes.databinding.FragmentMainBinding
 import com.mikhailovalx.notes.models.AppNote
 import com.mikhailovalx.notes.utilits.APP_ACTIVITY
+import com.mikhailovalx.notes.utilits.AppPreference
 
 
 class MainFragment : Fragment() {
@@ -76,7 +77,7 @@ class MainFragment : Fragment() {
         when (item.itemId) {
             R.id.btn_exit -> {
                 mViewModel.signOut()
-
+                AppPreference.setInitUser(false)
                 APP_ACTIVITY.runOnUiThread {
                     APP_ACTIVITY.navController.navigate(R.id.action_mainFragment_to_startFragment)
                 }
