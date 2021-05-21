@@ -18,7 +18,7 @@ import com.mikhailovalx.notes.utilits.APP_ACTIVITY
 class NoteFragment : Fragment() {
 
     private var _binding: FragmentNoteBinding? = null
-    private  val mBinding get() = _binding!!
+    private val mBinding get() = _binding!!
     private lateinit var mViewModel: NoteFragmentViewModel
     private lateinit var mCurrentNote: AppNote
 

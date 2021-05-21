@@ -7,11 +7,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.mikhailovalx.notes.models.AppNote
+import com.mikhailovalx.notes.utilits.REF_DATABASE
 
 class AllNotesLiveData : LiveData<List<AppNote>>() {
-    private val mAuth = FirebaseAuth.getInstance()
-    private val mDatabaseReference = FirebaseDatabase.getInstance().reference
-        .child(mAuth.currentUser?.uid.toString())
+
     private val listener = object : ValueEventListener{
         override fun onDataChange(snapshot: DataSnapshot) {
             value = snapshot.children.map {
@@ -22,13 +21,13 @@ class AllNotesLiveData : LiveData<List<AppNote>>() {
         override fun onCancelled(error: DatabaseError) {}
     }
 
-    override fun onActive() {
-        mDatabaseReference.addValueEventListener(listener)
-        super.onActive()
+    override fun onInactive() {
+        REF_DATABASE.removeEventListener(listener)
+        super.onInactive()
     }
 
-    override fun onInactive() {
-        mDatabaseReference.removeEventListener(listener)
-        super.onInactive()
+    override fun onActive() {
+        REF_DATABASE.addValueEventListener(listener)
+        super.onActive()
     }
 }
